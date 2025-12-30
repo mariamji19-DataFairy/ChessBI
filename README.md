@@ -36,20 +36,31 @@ graph TD
 
 ## Ingestion (Chess.com)
 
-To ingest chess game data from Chess.com:
+To ingest chess game data from Chess.com, use the CLI:
 
 ```powershell
-# Activate virtual environment first
+# Set user agent (recommended for API compliance)
+$env:CHESSBI_USER_AGENT="ChessBI (contact: mariamji19-DataFairy)"
+
+# Activate virtual environment
 .venv\Scripts\activate
 
 # Ingest last 3 months for a user
-python -c "from ingest.chesscom_ingest import run_chesscom_ingest; print(run_chesscom_ingest('USERNAME', max_months=3))"
+python -m ingest.cli chesscom --username YOUR_CHESSCOM_USERNAME --max-months 3
 
 # Ingest only months since 2024-01
-python -c "from ingest.chesscom_ingest import run_chesscom_ingest; print(run_chesscom_ingest('USERNAME', max_months=12, since='2024-01'))"
+python -m ingest.cli chesscom --username YOUR_CHESSCOM_USERNAME --max-months 12 --since 2024-01
+
+# Custom output directory
+python -m ingest.cli chesscom --username YOUR_CHESSCOM_USERNAME --out custom/path --max-months 6
 ```
 
-Replace `USERNAME` with the Chess.com username to fetch. Raw JSON files are saved to `data/raw/chesscom/USERNAME/`.
+Raw JSON files are saved to `data/raw/chesscom/<username>/` (this directory is gitignored).
+
+**Alternative (Python one-liner):**
+```powershell
+python -c "from ingest.chesscom_ingest import run_chesscom_ingest; print(run_chesscom_ingest('YOUR_CHESSCOM_USERNAME', max_months=3))"
+```
 
 ## How to Run Locally
 
