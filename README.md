@@ -34,6 +34,23 @@ graph TD
 - [ ] Performance Optimization
 - [ ] Advanced Analytics (ELO modeling, opening theory)
 
+## Ingestion (Chess.com)
+
+To ingest chess game data from Chess.com:
+
+```powershell
+# Activate virtual environment first
+.venv\Scripts\activate
+
+# Ingest last 3 months for a user
+python -c "from ingest.chesscom_ingest import run_chesscom_ingest; print(run_chesscom_ingest('USERNAME', max_months=3))"
+
+# Ingest only months since 2024-01
+python -c "from ingest.chesscom_ingest import run_chesscom_ingest; print(run_chesscom_ingest('USERNAME', max_months=12, since='2024-01'))"
+```
+
+Replace `USERNAME` with the Chess.com username to fetch. Raw JSON files are saved to `data/raw/chesscom/USERNAME/`.
+
 ## How to Run Locally
 
 1. Clone the repository:
