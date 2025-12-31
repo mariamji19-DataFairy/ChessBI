@@ -26,9 +26,9 @@ graph TD
 
 ## Roadmap
 
-- [ ] Data Ingestion Pipeline (Chess.com API, Lichess API)
-- [ ] DuckDB Warehouse Setup
-- [ ] dbt Models for Core KPIs
+- [x] Data Ingestion Pipeline (Chess.com API, Lichess API)
+- [x] DuckDB Warehouse Setup
+- [x] dbt Models for Core KPIs
 - [ ] Evidence Dashboard Development
 - [ ] CI/CD Pipeline Enhancement
 - [ ] Performance Optimization
@@ -94,6 +94,26 @@ Raw JSON files are saved to `data/raw/chesscom/<username>/` (this directory is g
 ```powershell
 python -c "from ingest.chesscom_ingest import run_chesscom_ingest; print(run_chesscom_ingest('YOUR_CHESSCOM_USERNAME', max_months=3))"
 ```
+
+## dbt (Analytics Layer)
+
+Once data is loaded into DuckDB, use dbt to build the analytics layer:
+
+```powershell
+# Load sample data into DuckDB
+python warehouse/load_duckdb.py --db warehouse/chessbi.duckdb --source sample
+
+# Test dbt connection
+dbt --project-dir dbt --profiles-dir dbt debug
+
+# Build all models and run tests
+dbt --project-dir dbt --profiles-dir dbt build
+```
+
+This creates:
+- **Staging**: `stg_games` - cleaned and standardized game data
+- **Marts**: `fact_games`, `dim_player`, `dim_opening`, `dim_time_control`
+- **Tests**: Data quality checks on primary keys and accepted values
 
 ## How to Run Locally
 

@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: fact_games
+    description: Fact table containing one row per chess game with all relevant metrics and foreign keys
+    columns:
+      - name: game_id
+        description: Unique game identifier (primary key)
+        tests:
+          - not_null
+          - unique
+      - name: created_at_ts
+        description: Game creation timestamp
+      - name: result_label
+        description: Standardized game result (white_win, black_win, draw, unknown)
+      - name: turns
+        description: Number of turns in the game
+      - name: white_player_id
+        description: White player username (FK to dim_player)
+      - name: black_player_id
+        description: Black player username (FK to dim_player)
+      - name: white_rating
+        description: White player rating at game start
+      - name: black_rating
+        description: Black player rating at game start
+      - name: time_control_raw
+        description: Time control string (FK to dim_time_control)
+      - name: opening_eco
+        description: ECO code for the opening (FK to dim_opening)
+      - name: opening_name
+        description: Opening name
+
+  - name: dim_player
+    description: Dimension table of all unique players
+    columns:
+      - name: player_id
+        description: Player username (primary key)
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_opening
+    description: Dimension table of chess openings with ECO codes and names
+    columns:
+      - name: opening_key
+        description: Surrogate key (MD5 hash of ECO+name) - primary key
+        tests:
+          - not_null
+          - unique
+      - name: opening_eco
+        description: ECO code (not unique - one code can have multiple names)
+        tests:
+          - not_null
+      - name: opening_name
+        description: Human-readable opening name
+
+  - name: dim_time_control
+    description: Dimension table of time control settings and categories
+    columns:
+      - name: time_control_raw
+        description: Raw time control string in format "base+increment" (primary key)
+        tests:
+          - not_null
+          - unique
+      - name: base_seconds
+        description: Base time in seconds before increments
+      - name: increment_seconds
+        description: Increment added per move in seconds
+      - name: time_control_category
+        description: Time control classification (bullet, blitz, rapid, classical, unknown)
+        tests:
+          - accepted_values:
+              values: ['bullet', 'blitz', 'rapid', 'classical', 'unknown']

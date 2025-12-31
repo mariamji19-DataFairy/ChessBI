@@ -1,0 +1,8 @@
+chessbi:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../warehouse/chessbi.duckdb
+      schema: main
+      threads: 4

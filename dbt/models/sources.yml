@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw chess game data loaded from CSV files
+    schema: main
+    tables:
+      - name: raw_games
+        description: Raw Lichess chess games with all original columns
+        columns:
+          - name: id
+            description: Unique game identifier
+          - name: created_at
+            description: Timestamp when the game was created (epoch or ISO format)
+          - name: winner
+            description: Game outcome - white, black, or draw
+          - name: turns
+            description: Number of turns in the game
+          - name: white_id
+            description: White player username
+          - name: black_id
+            description: Black player username
+          - name: white_rating
+            description: White player rating at game start
+          - name: black_rating
+            description: Black player rating at game start
+          - name: increment_code
+            description: Time control in format "base+increment" (e.g., "300+0")
+          - name: opening_eco
+            description: ECO code for the opening (e.g., "B01")
+          - name: opening_name
+            description: Human-readable opening name

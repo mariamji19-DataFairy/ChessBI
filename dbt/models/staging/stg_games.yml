@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: stg_games
+    description: Staged chess games with cleaned and standardized columns
+    columns:
+      - name: game_id
+        description: Unique game identifier
+        tests:
+          - not_null
+          - unique
+      - name: created_at_ts
+        description: Game creation timestamp
+      - name: winner_norm
+        description: Normalized winner value (lowercase)
+      - name: result_label
+        description: Standardized game result classification
+        tests:
+          - accepted_values:
+              values: ['white_win', 'black_win', 'draw', 'unknown']
+      - name: turns
+        description: Number of turns in the game
+      - name: white_player_id
+        description: White player username
+      - name: black_player_id
+        description: Black player username
+      - name: white_rating
+        description: White player rating
+      - name: black_rating
+        description: Black player rating
+      - name: time_control_raw
+        description: Raw time control string (e.g., "300+0")
+      - name: opening_eco
+        description: ECO code for the opening
+      - name: opening_name
+        description: Opening name
