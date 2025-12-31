@@ -244,43 +244,182 @@ Unique players: 1129
 Unique openings: 117
 ```
 
-## Step 5: Evidence Dashboard (Placeholder)
+## Step 5: Evidence Dashboard
 
-**Purpose:** Generate interactive dashboards from dbt models.
+**Purpose:** Create interactive dashboards from dbt models using Evidence.
 
-**Setup (once):**
+### Prerequisites
+
+Evidence requires Node.js >= 18.13:
 ```powershell
-# Install Evidence CLI (requires Node.js)
-npm install -g @evidence-dev/cli
-
-# Initialize Evidence project
-cd dashboard
-evidence init
+node -v  # Should be >= 18.13
+npm -v   # Should be installed
 ```
 
-**Development:**
-```powershell
-# Start development server
-cd dashboard
-evidence dev
-```
+### Initial Setup
 
-**Build for production:**
-```powershell
-# Generate static site
-cd dashboard
-evidence build
+The Evidence project is already initialized in `dashboard/`. Install dependencies:
 
-# Output: dashboard/build/ contains static HTML/CSS/JS
+```powershell
+cd dashboard
+npm install
 ```
 
 **Expected output:**
 ```
-🔍 Evidence development server running
-📊 Dashboards available at http://localhost:3000
+added 1307 packages
 ```
 
-**Note:** Evidence integration is planned but not yet implemented. This section will be updated once dashboard development begins.
+### Sync Database
+
+Evidence needs a copy of the DuckDB database in its `sources/` folder:
+
+```powershell
+cd dashboard
+.\sync_duckdb.ps1
+```
+
+**Expected output:**
+```
+[Evidence Sync] Syncing DuckDB database...
+[Evidence Sync] Creating directory: .\sources\chessbi
+[Evidence Sync] Copying: ..\warehouse\chessbi.duckdb -> .\sources\chessbi\chessbi.duckdb
+[Evidence Sync] Database synced successfully!
+[Evidence Sync] You can now start Evidence with: npm run dev
+```
+
+**Note:** Run `.\sync_duckdb.ps1` whenever the warehouse database is updated to refresh dashboard data.
+
+### Configure Data Source
+
+Evidence automatically processes DuckDB sources with query files.
+
+1. **Create connection configuration** at `dashboard/sources/chessbi/connection.yaml`:
+   ```yaml
+   name: chessbi
+   type: duckdb
+   options:
+     filename: chessbi.duckdb
+   ```
+
+2. **Create SQL query files** in `dashboard/sources/chessbi/`:
+   - Each `.sql` file becomes a queryable dataset
+   - Example: `fact_games.sql` → accessible as `{data.fact_games}` in Markdown pages
+
+3. **Run source processing:**
+   ```powershell
+   cd dashboard
+   npm run sources
+   ```
+
+   **Expected output:**
+   ```
+   ✔ Loading plugins & sources
+   -----
+     [Processing] chessbi
+     fact_games ✔ Finished, wrote 1997 rows.
+     rating_history ✔ Finished, wrote 1997 rows.
+   -----
+   [INFO]:    ✅ Done!
+   ```
+
+### Development
+
+```powershell
+# Start development server with live reload
+cd dashboard
+npm run dev
+
+# Open browser to http://localhost:3000
+```
+
+**Expected output:**
+```
+  EVIDENCE  v3.x.x
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+```
+
+### Build for Production
+
+```powershell
+# Generate static site
+cd dashboard
+npm run build
+
+# Output: dashboard/build/ contains static HTML/CSS/JS
+```
+
+### Creating Dashboards
+
+Dashboard pages are Markdown files in `dashboard/pages/`:
+
+**Example: `dashboard/pages/player-performance.md`**
+````markdown
+# Player Performance
+
+## Recent Games
+
+```sql recent_games
+SELECT 
+    created_at_ts,
+    white_player_id,
+    black_player_id,
+    result_label,
+    opening_name
+FROM {fact_games}
+ORDER BY created_at_ts DESC
+LIMIT 50
+```
+
+<DataTable data={recent_games}/>
+
+## Win Rate by Opening
+
+```sql win_rate
+SELECT 
+    opening_eco,
+    opening_name,
+    COUNT(*) as total_games,
+    SUM(CASE WHEN result_label = 'white_win' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as white_win_pct,
+    SUM(CASE WHEN result_label = 'black_win' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as black_win_pct
+FROM {fact_games}
+GROUP BY opening_eco, opening_name
+ORDER BY total_games DESC
+LIMIT 20
+```
+
+<BarChart 
+    data={win_rate} 
+    x=opening_name 
+    y=white_win_pct
+/>
+````
+
+Evidence will automatically query the `fact_games` dataset (from `fact_games.sql`) and render interactive tables/charts.
+
+**Common errors:**
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Cannot find module '@evidence-dev/...'` | Dependencies not installed | Run `npm install` in dashboard/ |
+| `Missing source manifest` | Source data not processed | Run `npm run sources` |
+| `Error: Binder Error: Referenced column not found` | SQL query uses wrong schema | Use `main.fact_games` not `chessbi.fact_games` |
+| `Port 3000 already in use` | Another process using port | Kill process or use different port |
+
+### Validation
+
+```powershell
+# Verify Evidence is serving content
+curl http://localhost:3000
+
+# Check source data was processed
+Get-Content dashboard\.evidence\template\static\data\manifest.json
+
+# Verify fact_games dataset exists
+# Navigate to http://localhost:3000 and check for data queries working
+```
 
 ## Troubleshooting
 

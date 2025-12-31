@@ -51,7 +51,8 @@ graph TD
 - [x] DuckDB Warehouse Setup
 - [x] dbt Models for Core KPIs
 - [x] Comprehensive Documentation (Stack Rationale, Architecture, Runbook, ADRs)
-- [ ] Evidence Dashboard Development
+- [x] Evidence Dashboard Setup (initialized in `dashboard/`)
+- [ ] Evidence Dashboard Development (build actual dashboard pages)
 - [ ] CI/CD Pipeline Enhancement
 - [ ] Performance Optimization
 - [ ] Advanced Analytics (ELO modeling, opening theory)
