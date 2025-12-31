@@ -86,9 +86,9 @@ def load_duckdb(
         
         con.execute("""
             CREATE VIEW raw_games_clean AS
-            SELECT 
+            SELECT
                 id,
-                CAST(created_at AS TIMESTAMP) AS created_at,
+                epoch_ms(CAST(created_at AS BIGINT)) AS created_at,
                 LOWER(winner) AS winner,
                 turns,
                 increment_code,
