@@ -28,3 +28,8 @@ Thumbs.db
 # Cache and environment
 .cache/
 .env
+
+# dbt
+dbt/target/
+dbt/logs/
+.user.yml

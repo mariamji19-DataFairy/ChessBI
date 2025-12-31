@@ -2,6 +2,27 @@
 
 ChessBI is a modern analytics platform for chess data, designed to deliver actionable insights for players, coaches, and analysts. Built on DuckDB, dbt, and Evidence, ChessBI transforms raw chess games into interactive dashboards and robust KPIs.
 
+## Why This Stack?
+
+This project uses a modern, local-first analytics stack optimized for **portfolio demonstration** and **production relevance**:
+
+- **DuckDB**: Embedded OLAP database (zero setup, fast analytics)
+- **dbt**: SQL-based transformations with built-in testing
+- **Evidence**: Code-based dashboards (version controlled)
+- **GitHub Actions**: Automated CI/CD
+
+**Key benefits**: Runs entirely locally, zero cloud costs, industry-standard tools, fully reproducible.
+
+📖 **Deep dive**: [Why We Chose This Stack](docs/stack.md) | [Architecture Details](docs/architecture.md) | [Technical Decision Record](docs/adrs/0001-tech-stack.md)
+
+## Documentation
+
+- **[Technology Stack](docs/stack.md)**: Why each tool was chosen, tradeoffs, and alternatives
+- **[Architecture](docs/architecture.md)**: System design, data flow, and layer responsibilities  
+- **[Runbook](docs/runbook.md)**: Step-by-step commands, troubleshooting, and validation
+- **[KPI Definitions](docs/kpis.md)**: Business metrics and calculation logic
+- **[ADR 0001: Tech Stack](docs/adrs/0001-tech-stack.md)**: Architectural decision record
+
 ## Key Metrics
 
 - **Win Rate**: Percentage of games won, segmented by opening, time control, color, and opponent rating.
@@ -29,6 +50,7 @@ graph TD
 - [x] Data Ingestion Pipeline (Chess.com API, Lichess API)
 - [x] DuckDB Warehouse Setup
 - [x] dbt Models for Core KPIs
+- [x] Comprehensive Documentation (Stack Rationale, Architecture, Runbook, ADRs)
 - [ ] Evidence Dashboard Development
 - [ ] CI/CD Pipeline Enhancement
 - [ ] Performance Optimization
