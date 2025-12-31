@@ -34,6 +34,39 @@ graph TD
 - [ ] Performance Optimization
 - [ ] Advanced Analytics (ELO modeling, opening theory)
 
+## Dataset
+
+This project uses chess game data for analytics. The workflow supports both a full dataset (for local development) and a committed sample (for CI/testing).
+
+### Setup
+
+1. **Place the full dataset** (not committed):
+   ```
+   data/raw/lichess/games.csv
+   ```
+   This directory is gitignored and won't be pushed to the repository.
+
+2. **Generate a sample dataset** (committed for CI):
+   ```powershell
+   python scripts/prepare_dataset.py --input data/raw/lichess/games.csv --out data/sample/games_sample.csv --rows 2000
+   ```
+   This creates a 2000-row sample in `data/sample/` that is committed to the repo for automated testing.
+
+3. **Load data into DuckDB**:
+   ```powershell
+   # Load from full dataset (local development)
+   python warehouse/load_duckdb.py --db warehouse/chessbi.duckdb --source raw
+
+   # Load from sample (CI/testing)
+   python warehouse/load_duckdb.py --db warehouse/chessbi.duckdb --source sample
+   ```
+
+The loader creates:
+- `raw_games` table with all CSV columns
+- `raw_games_clean` view with standardized column types
+
+**Note**: CI pipelines should use `--source sample` to work with the committed sample dataset.
+
 ## Ingestion (Chess.com)
 
 To ingest chess game data from Chess.com, use the CLI:
