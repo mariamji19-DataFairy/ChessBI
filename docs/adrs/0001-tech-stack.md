@@ -8,7 +8,7 @@
 
 ChessBI requires a modern analytics stack that balances:
 
-1. **Portfolio objectives**: Demonstrate analytics engineering skills relevant to industry (dbt, SQL, data quality)
+1. **Project objectives**: Demonstrate analytics engineering skills relevant to industry (dbt, SQL, data quality)
 2. **Practical constraints**: Zero cloud costs, fast local iteration, reproducible setup
 3. **Technical requirements**: Handle 20k+ rows locally, scale to millions in theory
 4. **CI/CD needs**: Automated testing with sample data, fast feedback cycles
@@ -57,7 +57,7 @@ ChessBI requires a modern analytics stack that balances:
    - ❌ Requires cloud accounts and credentials
    - ❌ Incurs costs (even with free tiers)
    - ❌ Cannot commit database to git
-   - **Verdict**: Not local-first, inappropriate for portfolio scale
+   - **Verdict**: Not local-first, inappropriate for demonstration projects
 
 4. **DuckDB** ✓ Selected
    - ✅ OLAP-optimized (columnar, vectorized execution)
@@ -99,7 +99,7 @@ ChessBI requires a modern analytics stack that balances:
    - ✅ Feature-rich, mature
    - ❌ Requires server deployment
    - ❌ Configuration not fully version-controlled
-   - ❌ Overkill for solo portfolio project
+   - ❌ Overkill for demonstration projects
    - **Verdict**: Too heavy for local-first approach
 
 2. **PowerBI / Tableau**
@@ -107,7 +107,7 @@ ChessBI requires a modern analytics stack that balances:
    - ❌ Expensive licenses
    - ❌ Not git-friendly (binary files)
    - ❌ Requires manual deployment
-   - **Verdict**: Not suitable for open-source portfolio
+   - **Verdict**: Not suitable for open-source projects
 
 3. **Jupyter Notebooks**
    - ✅ Easy to iterate
@@ -163,7 +163,7 @@ This stack optimizes for:
 2. **Industry relevance**: dbt skills directly transfer to production analytics teams (Snowflake/BigQuery + dbt is the standard)
 3. **Reproducibility**: Everything runs locally, no credentials or cloud setup required
 4. **Cost**: Zero operational costs, free tools throughout
-5. **Portfolio strength**: Demonstrates modern best practices (testing, version control, CI/CD)
+5. **Technical quality**: Demonstrates modern best practices (testing, version control, CI/CD)
 
 ### Architecture Pattern
 

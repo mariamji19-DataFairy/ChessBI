@@ -220,7 +220,7 @@ FROM raw_games;
 
 ## Scalability Considerations
 
-**Current scale** (portfolio project):
+**Current scale** (demonstration project):
 - 2,000 rows (sample) → 20,000 rows (local) → 1M rows (theoretical max)
 - Query latency: < 100ms for analytical queries
 - dbt build time: < 5 seconds

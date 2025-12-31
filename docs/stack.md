@@ -8,13 +8,13 @@
 - **Python**: API ingestion with retry/caching, data validation scripts
 - **GitHub Actions**: Free CI/CD for automated testing
 
-**Why portfolio-strong**: Demonstrates modern analytics patterns, zero cloud cost, skills transfer to Snowflake/BigQuery production stacks.
+**Why valuable**: Demonstrates modern analytics patterns, zero cloud cost, skills transfer to Snowflake/BigQuery production stacks.
 
 ---
 
 ## Project Goals
 
-ChessBI is designed as a **LinkedIn-worthy portfolio project** that demonstrates modern analytics engineering practices. The platform must be:
+ChessBI is designed as a **production-style analytics project** that demonstrates modern analytics engineering practices. The platform must be:
 
 1. **Reproducible**: Anyone can clone, setup, and run locally in minutes
 2. **Local-first**: No cloud dependencies or API keys required for core functionality
@@ -159,7 +159,7 @@ Every tool in the stack was chosen based on:
 - ❌ Vendor lock-in to GitHub
 - ❌ Limited to 2000 minutes/month on free tier (sufficient for this project)
 
-## Why This Stack is Portfolio-Strong
+## Why This Stack Demonstrates Professional Quality
 
 ### Demonstrates Modern Analytics Engineering
 
@@ -198,15 +198,15 @@ Every tool has direct production equivalents:
 - Clone repo, run 3 commands, see results
 - No API keys, no cloud setup, no waiting
 - Works on any laptop (Windows, Mac, Linux)
-- Portfolio reviewers can validate quality independently
+- Independent reviewers can validate quality
 
 ## Summary
 
-This stack optimizes for **learning, demonstration, and iteration speed** without sacrificing **production relevance**. It's the ideal balance for a portfolio project that shows:
+This stack optimizes for **learning, demonstration, and iteration speed** without sacrificing **production relevance**. It's the ideal balance for a technical project that shows:
 
 1. Understanding of modern data tooling
 2. Ability to make pragmatic technical decisions
 3. Focus on code quality and testing
-4. Production-ready patterns at portfolio scale
+4. Production-ready patterns at appropriate scale
 
 **Key principle**: Use the simplest tool that solves the problem, with a clear upgrade path to production equivalents.

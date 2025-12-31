@@ -4,7 +4,7 @@ ChessBI is a modern analytics platform for chess data, designed to deliver actio
 
 ## Why This Stack?
 
-This project uses a modern, local-first analytics stack optimized for **portfolio demonstration** and **production relevance**:
+This project uses a modern, local-first analytics stack optimized for **reproducibility** and **production relevance**:
 
 - **DuckDB**: Embedded OLAP database (zero setup, fast analytics)
 - **dbt**: SQL-based transformations with built-in testing
