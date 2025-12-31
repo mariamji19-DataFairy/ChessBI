@@ -80,7 +80,8 @@ def load_duckdb(
         for col_name, col_type in schema:
             print(f"  • {col_name}: {col_type}")
         
-        # Create cleaned view
+        # Create cleaned view with timestamp conversion
+        # Note: created_at is Unix epoch milliseconds, convert with epoch_ms()
         print(f"\n[ChessBI] Creating raw_games_clean view...")
         con.execute("DROP VIEW IF EXISTS raw_games_clean")
         

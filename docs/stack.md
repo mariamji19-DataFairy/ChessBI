@@ -1,5 +1,17 @@
 # Technology Stack
 
+## TL;DR
+
+- **DuckDB**: Embedded OLAP database (zero setup, git-committable, fast analytics)
+- **dbt**: SQL transformations with built-in testing (industry standard for analytics)
+- **Evidence**: Code-based dashboards (Markdown + SQL, version controlled)
+- **Python**: API ingestion with retry/caching, data validation scripts
+- **GitHub Actions**: Free CI/CD for automated testing
+
+**Why portfolio-strong**: Demonstrates modern analytics patterns, zero cloud cost, skills transfer to Snowflake/BigQuery production stacks.
+
+---
+
 ## Project Goals
 
 ChessBI is designed as a **LinkedIn-worthy portfolio project** that demonstrates modern analytics engineering practices. The platform must be:

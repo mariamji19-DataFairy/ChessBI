@@ -98,7 +98,7 @@ To ingest chess game data from Chess.com, use the CLI:
 $env:CHESSBI_USER_AGENT="ChessBI (contact: mariamji19-DataFairy)"
 
 # Activate virtual environment
-.venv\Scripts\activate
+.venv\Scripts\Activate.ps1
 
 # Ingest last 3 months for a user
 python -m ingest.cli chesscom --username YOUR_CHESSCOM_USERNAME --max-months 3
@@ -146,9 +146,9 @@ This creates:
    ```
 
 2. Create a virtual environment:
-   ```bash
+   ```powershell
    python -m venv .venv
-   .venv\Scripts\activate  # On Windows
+   .venv\Scripts\Activate.ps1  # Windows PowerShell
    ```
 
 3. Install dependencies:

@@ -50,7 +50,7 @@ def run_chesscom_ingest(
     """
     print(f"[ChessBI] Starting ingestion for user: {username}")
     
-    # Initialize client and load ETag cache
+    # Initialize client and load ETag cache for bandwidth optimization
     client = ChessComClient()
     etags = load_etags(cache_path)
     
@@ -61,7 +61,7 @@ def run_chesscom_ingest(
     # Sort archives by date (they're already in ascending order, but be explicit)
     archive_urls.sort()
     
-    # Filter by 'since' if provided
+    # Filter by 'since' date if provided (YYYY-MM format)
     if since:
         since_filtered = []
         for url in archive_urls:
@@ -91,13 +91,14 @@ def run_chesscom_ingest(
         
         print(f"[ChessBI] Processing {year_month}...", end=" ")
         
-        # Get cached ETag
+        # Get cached ETag to enable conditional request
         cached_etag = get_etag(etags, url)
         
         # Fetch archive
         status_code, data, new_etag = client.get_month_archive(url, cached_etag)
         
         if status_code == 304:
+            # ETag match - content unchanged, skip download
             print("unchanged (304)")
             months_unchanged.append(year_month)
         elif status_code == 200:
@@ -111,13 +112,13 @@ def run_chesscom_ingest(
             months_fetched.append(year_month)
             total_games += game_count
             
-            # Update ETag cache if present
+            # Update ETag cache for next run if present
             if new_etag:
                 set_etag(etags, url, new_etag)
         else:
             print(f"unexpected status {status_code}")
     
-    # Save updated ETag cache
+    # Save updated ETag cache to disk for future runs
     save_etags(cache_path, etags)
     
     # Prepare summary

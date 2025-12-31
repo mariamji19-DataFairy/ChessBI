@@ -33,7 +33,7 @@ class ChessComClient:
     Implements robust HTTP behavior including:
     - Exponential backoff with jitter for transient errors
     - Rate limit handling with Retry-After support
-    - ETag support for conditional requests
+    - ETag support for conditional requests (304 Not Modified)
     - Configurable timeouts and retry limits
     
     Args:
@@ -116,6 +116,9 @@ class ChessComClient:
         """
         Fetch a monthly game archive with optional ETag support.
         
+        Supports conditional requests: if the provided ETag matches the server's
+        current version, returns 304 Not Modified to avoid redundant data transfer.
+        
         Args:
             url: Full URL to the monthly archive endpoint.
             etag: Optional ETag from previous request for conditional fetch.
@@ -138,6 +141,7 @@ class ChessComClient:
         """
         headers = {}
         if etag:
+            # Conditional request: server returns 304 if content unchanged
             headers["If-None-Match"] = etag
         
         response = self._request_with_retry("GET", url, headers=headers, allow_304=True)
@@ -146,10 +150,10 @@ class ChessComClient:
         new_etag = response.headers.get("ETag")
         
         if status_code == 304:
-            # Not modified
+            # Not modified - use cached data
             return (304, None, new_etag)
         
-        # Status is 200
+        # Status is 200 - parse new data
         try:
             data = response.json()
         except requests.exceptions.JSONDecodeError as e:
@@ -165,7 +169,13 @@ class ChessComClient:
         allow_304: bool = False
     ) -> requests.Response:
         """
-        Execute HTTP request with retry logic and backoff.
+        Execute HTTP request with exponential backoff retry logic.
+        
+        Retry behavior:
+        - 429 (rate limit): Retry with Retry-After header or exponential backoff
+        - 5xx (server error): Retry with exponential backoff
+        - 4xx (client error): No retry (except 429)
+        - Network errors (timeout, connection): Retry with exponential backoff
         
         Args:
             method: HTTP method (GET, POST, etc.).
@@ -197,13 +207,14 @@ class ChessComClient:
                     return response
                 
                 # Handle rate limiting (429)
+                # Handle rate limiting (429) - respect Retry-After header
                 if response.status_code == 429:
                     retry_after = response.headers.get("Retry-After")
                     if retry_after:
                         try:
                             sleep_seconds = int(retry_after)
                         except ValueError:
-                            # Retry-After might be an HTTP date, use default backoff
+                            # Retry-After might be an HTTP date, fall back to backoff
                             sleep_seconds = self._calculate_backoff(attempt)
                     else:
                         sleep_seconds = self._calculate_backoff(attempt)
@@ -218,7 +229,7 @@ class ChessComClient:
                             f"Rate limit exceeded after {self.max_retries} retries"
                         )
                 
-                # Handle server errors (5xx) - retry
+                # Handle server errors (5xx) - transient, retry
                 if 500 <= response.status_code < 600:
                     if attempt < self.max_retries:
                         sleep_seconds = self._calculate_backoff(attempt)
@@ -231,7 +242,7 @@ class ChessComClient:
                             f"Server error after {self.max_retries} retries"
                         )
                 
-                # Handle client errors (4xx) - don't retry except 429
+                # Handle client errors (4xx) - permanent, don't retry (except 429)
                 if 400 <= response.status_code < 500:
                     raise ChessComAPIError(
                         response.status_code,
@@ -249,7 +260,7 @@ class ChessComClient:
                 )
             
             except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-                # Transient network errors - retry
+                # Transient network errors - retry with backoff
                 if attempt < self.max_retries:
                     sleep_seconds = self._calculate_backoff(attempt)
                     time.sleep(sleep_seconds)
@@ -261,7 +272,7 @@ class ChessComClient:
                     )
             
             except requests.exceptions.RequestException as e:
-                # Other request errors - don't retry
+                # Other request errors - permanent, don't retry
                 raise ChessComClientError(f"Request failed: {e}")
         
         # Should not reach here, but just in case
@@ -270,6 +281,9 @@ class ChessComClient:
     def _calculate_backoff(self, attempt: int) -> float:
         """
         Calculate exponential backoff delay with jitter.
+        
+        Formula: delay = base * 2^attempt + jitter
+        Jitter: ±25% randomization to prevent thundering herd
         
         Args:
             attempt: Current retry attempt number (0-indexed).
@@ -280,7 +294,7 @@ class ChessComClient:
         # Exponential backoff: base * 2^attempt
         delay = self.backoff_base_seconds * (2 ** attempt)
         
-        # Add jitter: ±25% randomization
+        # Add jitter: ±25% randomization to avoid synchronized retries
         jitter = delay * 0.25 * (2 * random.random() - 1)
         
         return delay + jitter

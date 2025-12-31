@@ -1,5 +1,29 @@
 # ChessBI Runbook
 
+## TL;DR - Quick Start
+
+```powershell
+# 1. Setup
+git clone https://github.com/mariamji19-DataFairy/ChessBI.git && cd ChessBI
+python -m venv .venv && .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+# 2. Prepare sample dataset
+python scripts/prepare_dataset.py --input data/raw/archive/games.csv --out data/sample/games_sample.csv --rows 2000
+
+# 3. Load into DuckDB
+python warehouse/load_duckdb.py --db warehouse/chessbi.duckdb --source sample
+
+# 4. Build dbt models
+cd dbt && dbt build && cd ..
+```
+
+**Result**: All 18 dbt tests passing, analytics layer ready for querying.
+
+---
+
+## Full Runbook
+
 This runbook provides step-by-step commands for common operations. All commands assume you're in the project root directory with the virtual environment activated.
 
 ## Prerequisites
